@@ -49,12 +49,24 @@ router.put('/:id', validateProject, validateProjectId, (req, res, next) =>{
         })
 })
 
-router.delete('/:id', validateProjectId, (req, res, next) =>{
-    next()
+router.delete('/:id', validateProjectId, async (req, res, next) =>{
+    try {
+        await ProjectsModel.remove(req.params.id)
+        res.json(req.project)
+    }
+    catch (err){
+        next(err)
+    }
 })
 
-router.get('/:id/actions', validateProjectId, (req, res, next) =>{
-    next()
+router.get('/:id/actions', validateProjectId, async (req, res, next) =>{
+    try {
+        const result = await ProjectsModel.getProjectActions(req.params.id)
+        res.json(result)
+      }
+      catch (err) {
+        next(err)
+      }
 })
 
 router.use((err, req, res, next) =>{
