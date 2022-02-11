@@ -43,10 +43,7 @@ router.put('/:id', validateProject, validateProjectId, (req, res, next) =>{
         .then(project =>{
             res.json(project)
         })
-        .catch(err =>{
-            res.status(500).json({message: "The project information could not be modified" });
-            next();
-        })
+        .catch(next)
 })
 
 router.delete('/:id', validateProjectId, async (req, res, next) =>{

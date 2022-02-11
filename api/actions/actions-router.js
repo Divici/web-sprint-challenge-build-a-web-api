@@ -32,11 +32,24 @@ router.post('/', validateAction, (req, res, next) =>{
 })
 
 router.put('/:id', validateActionId, validateAction, (req, res, next) =>{
-    next()
+    ActionsModel.update(req.params.id, req.body)
+        .then((result) => {
+            return ActionsModel.get(req.params.id)
+        })
+        .then(action=>{
+            res.json(action)
+        })
+        .catch(next)
 })
 
-router.delete('/:id', validateActionId, (req, res, next) =>{
-    next()
+router.delete('/:id', validateActionId, async (req, res, next) =>{
+    try {
+        await ActionsModel.remove(req.params.id)
+        res.json(req.action)
+    }
+    catch (err){
+        next(err)
+    }
 })
 
 router.use((err, req, res, next) =>{
