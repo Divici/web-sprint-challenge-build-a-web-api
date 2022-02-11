@@ -1,5 +1,5 @@
 const express = require('express');
-const {validateProject, } = require('./projects-middleware')
+const {validateProject, validateProjectId, } = require('./projects-middleware')
 const ProjectsModel = require('./projects-model')
 
 const router = express.Router();
@@ -7,16 +7,13 @@ const router = express.Router();
 router.get('/', (req, res, next) =>{
     ProjectsModel.get()
         .then(projects => {
-            console.log(projects);
+            res.json(projects)
         })
-        .catch((err) => {
-            console.log('it didnt work');
-            next()
-        });
+        .catch(next);
 })
 
-router.get('/:id', (req, res, next) =>{
-    next()
+router.get('/:id', validateProjectId, (req, res, next) =>{
+    res.json(req.project);
 })
 
 router.post('/', (req, res, next) =>{
@@ -26,25 +23,22 @@ router.post('/', (req, res, next) =>{
     }
     else {
         ProjectsModel.insert(req.body)
-            .then(result => {
-                console.log(result);
-                //res.status(201).json(result))
+            .then(project => {
+                res.status(201).json(project)
             })
-            .catch((err) => {
-                console.log('wasnt able to post');
-            });
+            .catch(next)
     }
 })
 
-router.put('/:id', validateProject, (req, res, next) =>{
+router.put('/:id', validateProject, validateProjectId, (req, res, next) =>{
     next()
 })
 
-router.delete('/:id', (req, res, next) =>{
+router.delete('/:id', validateProjectId, (req, res, next) =>{
     next()
 })
 
-router.get('/:id/actions', (req, res, next) =>{
+router.get('/:id/actions', validateProjectId, (req, res, next) =>{
     next()
 })
 
