@@ -31,7 +31,22 @@ router.post('/', (req, res, next) =>{
 })
 
 router.put('/:id', validateProject, validateProjectId, (req, res, next) =>{
-    next()
+    ProjectsModel.update(req.params.id, req.body)
+        .then((editedProject) => {
+            return editedProject
+        })
+        .then(getById =>{
+            if(getById){
+                return ProjectsModel.get(req.params.id)
+            }
+        })
+        .then(project =>{
+            res.json(project)
+        })
+        .catch(err =>{
+            res.status(500).json({message: "The project information could not be modified" });
+            next();
+        })
 })
 
 router.delete('/:id', validateProjectId, (req, res, next) =>{
